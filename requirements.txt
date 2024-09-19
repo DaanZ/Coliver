@@ -1,0 +1,10 @@
+openai
+beautifulsoup4
+selenium
+requests
+streamlit
+langchain_openai
+langchain_community
+langchain_core
+langchain
+faiss-cpu
