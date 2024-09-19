@@ -1,5 +1,6 @@
 
 import streamlit as st
+from dotenv import load_dotenv
 from langchain.chains.conversational_retrieval.base import ConversationalRetrievalChain
 from langchain_community.vectorstores import FAISS
 from langchain_core.messages import SystemMessage, AIMessage, HumanMessage
@@ -7,6 +8,8 @@ from langchain_openai import OpenAIEmbeddings, ChatOpenAI
 
 from history import History
 from loader import history_pages, get_pages
+
+load_dotenv()
 
 company_name = "Coliver"
 system_prompt = f"""You are a very kindly and Coliver assistant for {company_name}. You are
