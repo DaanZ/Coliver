@@ -20,20 +20,6 @@ def streaming_interface(company_name: str, emoji: str, history: History, optiona
     # Initialize history if not already in session state
     if "history" not in st.session_state.keys():
         st.session_state.history = history
-        if prompt is None:
-            st.session_state.history.system(
-                f"""You are a very kindly and friendly marketing assistant for {company_name}. 
-            You are currently having a conversation with a marketing person. Answer the questions in a kind and friendly 
-            way, being the expert for {company_name} to answer any questions about marketing.""")
-        else:
-            st.session_state.history.system(prompt)
-
-        if optional:
-            st.session_state.history.system(optional)
-            with st.chat_message("system"):
-                st.markdown(optional)
-
-        st.session_state.history.assistant(f"Hello there, how can I help you? {emoji}\n")
 
     # Display all previous messages
     for message in st.session_state.history.logs:
