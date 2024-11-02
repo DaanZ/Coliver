@@ -9,13 +9,13 @@ from streaming import llm_stream, process_stream
 chat = ChatOpenAI(model="gpt-4o")
 
 
-def streaming_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None, pages=None, agent="Marketing"):
+def streaming_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None, pages=None):
     st.set_page_config(
-        page_title=f"{company_name} GPT",
+        page_title=f"{company_name}",
         page_icon=emoji,
         layout="wide"
     )
-    st.title(f"{company_name} {agent} GPT")
+    st.title(f"{company_name}")
 
     # Initialize history if not already in session state
     if "history" not in st.session_state.keys():
