@@ -1,11 +1,11 @@
-from chatgpt import llm_chat
+from chatgpt import llm_chat, openai_client
 from history import History
 
 
 def llm_stream(history, model_name: str = "gpt-4o-mini"):
 
     # Initialize the stream
-    stream  = openai_client.chat.completions.create(
+    stream = openai_client.chat.completions.create(
         model=model_name,  # Adjust model as needed
         messages=history.logs,
         stream=True  # Enable streaming

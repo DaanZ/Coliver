@@ -9,7 +9,7 @@ from streaming import llm_stream, process_stream
 chat = ChatOpenAI(model="gpt-4o")
 
 
-def streaming_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None, pages=None):
+def streaming_interface(company_name: str, emoji: str, history: History, pages=None):
     st.set_page_config(
         page_title=f"{company_name}",
         page_icon=emoji,
