@@ -2,7 +2,7 @@ from chatgpt import llm_chat, openai_client
 from history import History
 
 
-def llm_stream(history, model_name: str = "gpt-4o-mini"):
+def llm_stream(history, model_name: str = "gpt-4o"):
 
     # Initialize the stream
     stream = openai_client.chat.completions.create(

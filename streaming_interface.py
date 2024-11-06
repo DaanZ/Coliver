@@ -1,12 +1,30 @@
+import os
 
+import rootpath
 import streamlit as st
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from pydantic import BaseModel
 
+from chatgpt import llm_strict
 from history import History
 from streaming import llm_stream, process_stream
 
 chat = ChatOpenAI(model="gpt-4o")
+
+
+class BooleanDecision(BaseModel):
+    mentioned: bool
+
+
+def check_decision_answer(message, answer):
+    history = History()
+    history.user(message)
+    history.assistant(answer)
+    history.user("Did the assistant say anything about the preheating of the sauna? Only return true or false:")
+    decision = llm_strict(history, base_model=BooleanDecision)
+    print(decision)
+    return decision.mentioned
 
 
 def streaming_interface(company_name: str, emoji: str, history: History, pages=None):
@@ -55,3 +73,13 @@ def streaming_interface(company_name: str, emoji: str, history: History, pages=N
             for chunk in answers:
                 assistant_text.markdown(chunk)  # Update progressively
             st.session_state.history.assistant(chunk)  # Save final message in history
+
+            if check_decision_answer(user_prompt, chunk):
+                sauna_path = os.path.join(rootpath.detect(), "coliving", "images", "sauna_knobs.png")
+                if os.path.exists(sauna_path):
+                    # Create two columns, display image in the left column (50% width)
+                    col1, _ = st.columns([1, 1])  # 50% each column
+                    with col1:
+                        st.image(sauna_path, caption="Sauna Knobs", use_column_width=True)
+                else:
+                    st.warning("Sauna knob image not found.")
