@@ -55,7 +55,7 @@ if __name__ == "__main__":
 
 We hope these simple guidelines help everyone enjoy their time at Coliving!""")
         print(len(history.logs))
-        streaming_interface(company_name, emoji, history)
+        streaming_interface(company_name, emoji, history, interface="Coliving")
     except KeyboardInterrupt:
         print("Program interrupted.")
 

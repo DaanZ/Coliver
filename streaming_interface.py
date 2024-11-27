@@ -6,6 +6,7 @@ from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from pydantic import BaseModel
 
+from airtable import create_qna
 from chatgpt import llm_strict
 from history import History
 from streaming import llm_stream, process_stream
@@ -27,13 +28,13 @@ def check_decision_answer(message, answer):
     return decision.mentioned
 
 
-def streaming_interface(company_name: str, emoji: str, history: History, pages=None):
+def streaming_interface(company_name: str, emoji: str, history: History, pages=None, interface="Coliving"):
     st.set_page_config(
         page_title=f"{company_name}",
         page_icon=emoji,
         layout="wide"
     )
-    st.title(f"{company_name}")
+    st.image("data/coliver.png")
 
     # Initialize history if not already in session state
     if "history" not in st.session_state.keys():
@@ -73,6 +74,9 @@ def streaming_interface(company_name: str, emoji: str, history: History, pages=N
             for chunk in answers:
                 assistant_text.markdown(chunk)  # Update progressively
             st.session_state.history.assistant(chunk)  # Save final message in history
+
+            # Save to Airtable
+            create_qna({"Question": user_prompt, "Answer": chunk, "Interface": interface})
 
             if check_decision_answer(user_prompt, chunk):
                 sauna_path = os.path.join(rootpath.detect(), "coliving", "images", "sauna_knobs.png")

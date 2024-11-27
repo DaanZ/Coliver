@@ -10,3 +10,4 @@ langchain
 faiss-cpu
 python_dotenv
 rootpath
+pyairtable

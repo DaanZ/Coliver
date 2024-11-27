@@ -21,7 +21,7 @@ if __name__ == "__main__":
         history: History = load_knowledge("website")
         history.assistant("""Welcome to Coliver, how can we help you?""")
         print(len(history.logs))
-        streaming_interface(company_name, emoji, history)
+        streaming_interface(company_name, emoji, history, interface="Coliver")
     except KeyboardInterrupt:
         print("Program interrupted.")
 

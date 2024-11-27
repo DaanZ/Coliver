@@ -1,0 +1,7 @@
+[theme]
+primaryColor = "#ffd000"  # Forest green
+backgroundColor = "#FFFFFF"  # Black background
+secondaryBackgroundColor = "#2B2B2B"  # Dark gray for sidebar
+textColor = "#000000"  # White text
+font = "Poppins"  # Optional: You can choose a different font here
+base = "light"
