@@ -12,14 +12,14 @@ def load_knowledge(folder: str):
 
 
 if __name__ == "__main__":
-    company_name = "Coliver Coliving"
+    company_name = "Coliver"
     emoji = "🏡🍹🐠"
 
     # Main program logic (call this function when you want to start the thread)
     try:
-        history: History = load_knowledge("coliving")
+        history: History = load_knowledge("unify")
         print(len(history.logs))
-        streaming_interface(company_name, emoji, history, interface="Coliving")
+        streaming_interface(company_name, emoji, history, interface="Coliver")
     except KeyboardInterrupt:
         print("Program interrupted.")
 
