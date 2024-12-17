@@ -32,8 +32,15 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
         page_icon=emoji,
         layout="wide"
     )
+    #col1, col2 = st.columns([4,1])
+    #with col1:
     st.image("data/coliver.png", width=250)
-
+    #print(len(st.session_state.history.logs), st.session_state.initial_size)
+    #if len(st.session_state.history.logs) > st.session_state.initial_size:
+    #    with col2:
+    #        if st.button("Report a wrong answer"):
+    #            data = {"Question": st.session_state.history.logs[-2].content, "Answer": st.session_state.history.logs[-1].content}
+    #            report_qna(data)
 
     # Display all previous messages
     for message in st.session_state.history.logs:
@@ -42,17 +49,8 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
         with st.chat_message(message["role"]):
             st.markdown(message["content"])
 
-    col1, col2 = st.columns([5, 1])
-    with col1:
-        user_prompt = st.chat_input()  # Input box for the user
+    user_prompt = st.chat_input()  # Input box for the user
 
-    print(len(st.session_state.history.logs), st.session_state.initial_size)
-    if len(st.session_state.history.logs) > st.session_state.initial_size:
-        with col2:
-            if st.button("Report answer"):
-                data = {"Question": st.session_state.history.logs[-2]["content"],
-                        "Answer": st.session_state.history.logs[-1]["content"]}
-                report_qna(data)
 
     if user_prompt is not None:
         st.session_state.history.user(user_prompt)
@@ -75,7 +73,18 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
         chunk = ""
         for chunk in answers:
             assistant_text.markdown(chunk)  # Update progressively
-        st.session_state.history.assistant(chunk)  # Save final message in history
+
+        col1, col2 = st.columns([4, 1])
+        with col1:
+            st.session_state.history.assistant(chunk)  # Save final message in history
+
+        print(len(st.session_state.history.logs), st.session_state.initial_size)
+        if len(st.session_state.history.logs) > st.session_state.initial_size:
+            with col2:
+                if st.button("Report answer"):
+                    data = {"Question": st.session_state.history.logs[-2].content,
+                            "Answer": st.session_state.history.logs[-1].content}
+                    report_qna(data)
 
         # Save to Airtable
         create_qna({"Question": user_prompt, "Answer": chunk})
@@ -89,3 +98,4 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
                     st.image(sauna_path, caption="Sauna Knobs", use_column_width=True)
             else:
                 st.warning("Sauna knob image not found.")
+
