@@ -4,7 +4,7 @@ import rootpath
 import streamlit as st
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from airtable import create_qna
 from chatgpt import llm_strict
@@ -15,30 +15,25 @@ chat = ChatOpenAI(model="gpt-4o")
 
 
 class BooleanDecision(BaseModel):
-    mentioned: bool
+    mentioned: bool = Field(..., description="Did the assistant say anything about the preheating of the sauna? Only return true or false:")
 
 
 def check_decision_answer(message, answer):
     history = History()
     history.user(message)
     history.assistant(answer)
-    history.user("Did the assistant say anything about the preheating of the sauna? Only return true or false:")
     decision = llm_strict(history, base_model=BooleanDecision)
     print(decision)
     return decision.mentioned
 
 
-def streaming_interface(company_name: str, emoji: str, history: History, pages=None, interface="Coliving"):
+def streaming_interface(company_name: str, emoji: str, pages=None, interface="Coliving"):
     st.set_page_config(
         page_title=f"{company_name}",
         page_icon=emoji,
         layout="wide"
     )
-    st.image("data/coliver.png")
-
-    # Initialize history if not already in session state
-    if "history" not in st.session_state.keys():
-        st.session_state.history = history
+    st.image("data/coliver.png", width=250)
 
     # Display all previous messages
     for message in st.session_state.history.logs:
