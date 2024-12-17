@@ -1,4 +1,3 @@
-import copy
 import os
 
 from dotenv import load_dotenv
@@ -13,6 +12,13 @@ base = Base(AIRTABLE_API_KEY, COLIVER_BASE_ID)
 QNA_TABLE_NAME = os.environ.get("QNA_TABLE_NAME")
 company_table = base.table(QNA_TABLE_NAME)
 
+REPORT_TABLE_NAME = os.environ.get("REPORT_TABLE_NAME")
+report_table = base.table(REPORT_TABLE_NAME)
+
 
 def create_qna(data):
     return company_table.create(data)
+
+
+def report_qna(data):
+    return report_table.create(data)

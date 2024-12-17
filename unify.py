@@ -21,10 +21,10 @@ if __name__ == "__main__":
         streamlit.session_state.history.system("You are an assistant for Coliver to answer any and all questions people have about Coliver, do not recommend contacting the team of Coliver for more information.")
         streamlit.session_state.history.assistant("""Welcome, Coliver!👋  
         I’m here to help with house rules 📋, shared spaces 🛋️, and community life 🎉—just ask! 🌟""")
-
+        streamlit.session_state.initial_size = len(streamlit.session_state.history.logs)
     # Main program logic (call this function when you want to start the thread)
     try:
-        streaming_interface(company_name, emoji, interface="Coliver")
+        streaming_interface(company_name, emoji)
     except KeyboardInterrupt:
         print("Program interrupted.")
 
