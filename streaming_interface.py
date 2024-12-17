@@ -73,18 +73,7 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
         chunk = ""
         for chunk in answers:
             assistant_text.markdown(chunk)  # Update progressively
-
-        col1, col2 = st.columns([4, 1])
-        with col1:
-            st.session_state.history.assistant(chunk)  # Save final message in history
-
-        print(len(st.session_state.history.logs), st.session_state.initial_size)
-        if len(st.session_state.history.logs) > st.session_state.initial_size:
-            with col2:
-                if st.button("Report answer"):
-                    data = {"Question": st.session_state.history.logs[-2].content,
-                            "Answer": st.session_state.history.logs[-1].content}
-                    report_qna(data)
+        st.session_state.history.assistant(chunk)  # Save final message in history
 
         # Save to Airtable
         create_qna({"Question": user_prompt, "Answer": chunk})
@@ -99,3 +88,22 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
             else:
                 st.warning("Sauna knob image not found.")
 
+    if len(st.session_state.history.logs) > st.session_state.initial_size:
+        print("showing button")
+        if st.button("Report answer"):
+            print("reporting")
+            report_qna({"Question": st.session_state.history.logs[-2]["content"],
+                    "Answer": st.session_state.history.logs[-1]["content"]})
+            #print("clicking report")
+            #if st.session_state.report:
+            #    st.session_state.report = None
+            #else:
+            #    st.session_state.report =
+
+        #if st.session_state.report:
+        #    reason = st.text_input("", placeholder="Report answer:")
+        #    if st.button("Submit"):
+        #        if reason:
+        #            st.session_state.report["Reason"] = reason
+        #        report_qna(st.session_state.report)
+        #        st.session_state.report = None
