@@ -51,7 +51,6 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
 
     user_prompt = st.chat_input()  # Input box for the user
 
-
     if user_prompt is not None:
         st.session_state.history.user(user_prompt)
         with st.chat_message("user"):
