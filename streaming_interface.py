@@ -1,29 +1,15 @@
 import os
 
-import rootpath
 import streamlit as st
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
-from pydantic import BaseModel, Field
 
 from airtable import create_qna, report_qna
-from chatgpt import llm_strict
-from history import History
+from classify import classify_history
 from streaming import llm_stream, process_stream
 
 chat = ChatOpenAI(model="gpt-4o")
 
-
-class BooleanDecision(BaseModel):
-    mentioned: bool = Field(..., description="Did the user ask anything about the instructions for the sauna? Only return true or false:")
-
-
-def check_decision_answer(message, answer):
-    history = History()
-    history.user(message)
-    history.assistant(answer)
-    decision = llm_strict(history, base_model=BooleanDecision)
-    return decision.mentioned
 
 
 def streaming_interface(company_name: str, emoji: str, pages=None):
@@ -77,15 +63,16 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
         # Save to Airtable
         create_qna({"Question": user_prompt, "Answer": chunk})
 
-        if check_decision_answer(user_prompt, chunk):
-            sauna_path = os.path.join(rootpath.detect(), "coliving", "images", "sauna_knobs.png")
-            if os.path.exists(sauna_path):
-                # Create two columns, display image in the left column (50% width)
-                col1, _ = st.columns([1, 1])  # 50% each column
-                with col1:
-                    st.image(sauna_path, caption="Sauna Knobs", use_column_width=True)
-            else:
-                st.warning("Sauna knob image not found.")
+        images = classify_history(user_prompt)
+        if images:
+            for image in images:
+                if os.path.exists(image["path"]):
+                    # Create two columns, display image in the left column (50% width)
+                    col1, _ = st.columns([1, 2])  # 50% each column
+                    with col1:
+                        st.image(image["path"], caption=image["caption"], use_column_width=True)
+                else:
+                    st.warning("Image not found.")
 
     if len(st.session_state.history.logs) > st.session_state.initial_size:
         print("showing button")
