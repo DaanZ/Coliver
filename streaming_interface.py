@@ -1,5 +1,6 @@
 import os
 
+import rootpath
 import streamlit as st
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
@@ -10,6 +11,13 @@ from streaming import llm_stream, process_stream
 
 chat = ChatOpenAI(model="gpt-4o")
 
+assistant_image_path = os.path.join(rootpath.detect(), "data", "coliver_logo.png").replace("\\", "/")
+if os.path.exists(assistant_image_path):
+    avatars = {"assistant": assistant_image_path,
+               "user": "👤"}
+else:
+    avatars = {"assistant": "🤖",
+               "user": "👤"}
 
 
 def streaming_interface(company_name: str, emoji: str, pages=None):
@@ -32,18 +40,18 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
     for message in st.session_state.history.logs:
         if message["role"] == "system":
             continue
-        with st.chat_message(message["role"]):
+        with st.chat_message(message["role"], avatar=avatars[message["role"]]):
             st.markdown(message["content"])
 
     user_prompt = st.chat_input()  # Input box for the user
 
     if user_prompt is not None:
         st.session_state.history.user(user_prompt)
-        with st.chat_message("user"):
+        with st.chat_message("user", avatar=avatars["user"]):
             st.markdown(user_prompt)
 
         # Placeholder for the assistant's reply
-        assistant_message_placeholder = st.chat_message("assistant")
+        assistant_message_placeholder = st.chat_message("assistant", avatar=avatars["assistant"])
         assistant_text = assistant_message_placeholder.empty()
         assistant_text.markdown("⌂")
         # Stream response
@@ -65,12 +73,14 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
 
         images = classify_history(user_prompt)
         if images:
-            for image in images:
+            # Create two columns, display image in the left column (50% width)
+            cols = st.columns([1, 1, 1])  # 50% each column
+
+            for index, image in enumerate(images):
                 if os.path.exists(image["path"]):
-                    # Create two columns, display image in the left column (50% width)
-                    col1, _ = st.columns([1, 2])  # 50% each column
-                    with col1:
-                        st.image(image["path"], caption=image["caption"], use_container_width=True)
+                    col = cols[index]
+                    with col:
+                        st.image(image["path"], caption=image["caption"])
                 else:
                     st.warning("Image not found.")
 
