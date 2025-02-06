@@ -70,7 +70,7 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
                     # Create two columns, display image in the left column (50% width)
                     col1, _ = st.columns([1, 2])  # 50% each column
                     with col1:
-                        st.image(image["path"], caption=image["caption"], use_column_width=True)
+                        st.image(image["path"], caption=image["caption"], use_container_width=True)
                 else:
                     st.warning("Image not found.")
 
