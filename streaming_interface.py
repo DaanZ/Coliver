@@ -28,7 +28,7 @@ def streaming_interface(company_name: str, emoji: str, pages=None):
     )
     #col1, col2 = st.columns([4,1])
     #with col1:
-    st.image("data/coliver.png", width=250)
+    st.image("data/logo.png", width=250)
     #print(len(st.session_state.history.logs), st.session_state.initial_size)
     #if len(st.session_state.history.logs) > st.session_state.initial_size:
     #    with col2:
